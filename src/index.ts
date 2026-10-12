@@ -73,7 +73,13 @@ function drawLine(x: number, y: number) {
   lastPointer = { x, y };
 }
 
-window.addEventListener("load", () => drawPointer(pointerSize));
+window.addEventListener("load", () => {
+  if (!paintCtx) return;
+
+  paintCtx.fillStyle = "#fff";
+  paintCtx.fillRect(0, 0, canvasPaint.width, canvasPaint.height);
+  drawPointer(pointerSize);
+});
 
 document.getElementById("painting")?.addEventListener("change", (e) => {
   const target = e.target as HTMLInputElement;
@@ -91,4 +97,11 @@ document.getElementById("pointerSize")?.addEventListener("input", (e) => {
   drawPointer(pointerSize);
   const sizeText = document.getElementById("sizeText") as HTMLLabelElement;
   sizeText.textContent = target.value;
+});
+
+document.getElementById("dl")?.addEventListener("click", () => {
+  const link = document.createElement("a");
+  link.href = canvasPaint.toDataURL("image/png");
+  link.download = "image.png";
+  link.click();
 });

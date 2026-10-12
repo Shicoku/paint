@@ -1,3 +1,15 @@
+.canvas {
+  position: relative;
+  width: 400px;
+  height: 400px;
+}
+
+.canvas canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 .dial-wrap {
   display: flex;
   gap: 10px;

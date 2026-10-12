@@ -1,67 +1,83 @@
-// 読み込み
-window.addEventListener("load", () => {
-  const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-  const ctx = canvas?.getContext("2d");
+import { createDial } from "./util/dial";
 
-  if (!ctx) return;
+type Pointer = { x: number; y: number };
 
-  const lastPosition = { x: 0, y: 0 }; // マウスの最後の位置を保持するオブジェクト
+const canvas_size = 400;
+const center = canvas_size / 2;
+const scale = canvas_size / 360;
 
-  let isDrag = false; // ドラッグ中かどうかを判定するフラグ
+const pointer: Pointer = { x: center, y: center };
 
-  // 描画処理
-  function draw(x: number, y: number) {
-    if (!isDrag) return;
-    if (!ctx) return;
+function clamp(n: number): number {
+  return Math.min(canvas_size, Math.max(0, n));
+}
 
-    // 線の状態
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    ctx.lineWidth = 5;
-    ctx.strokeStyle = "black";
+function toCoord(angle: number): number {
+  return clamp(center + angle * scale);
+}
 
-    // 最後の位置が初期値の場合は、現在の位置に移動する
-    if (lastPosition.x === 0 || lastPosition.y === 0) {
-      ctx.moveTo(x, y);
-    } else {
-      ctx.moveTo(lastPosition.x, lastPosition.y);
-    }
-    ctx.lineTo(x, y);
-    ctx.stroke();
-    lastPosition.x = x;
-    lastPosition.y = y;
-  }
+const xOut = document.querySelector("#x-out") as HTMLSpanElement;
+const dialX = createDial(document.querySelector(".dial-x") as HTMLDivElement, (v) => {
+  pointer.x = toCoord(v);
+  xOut.textContent = String(Math.round(pointer.x));
+  drawLine(pointer.x, pointer.y);
+  drawPointer();
+});
 
-  function clear() {
-    ctx?.clearRect(0, 0, canvas.width, canvas.height);
-  }
+const yOut = document.querySelector("#y-out") as HTMLSpanElement;
+const dialY = createDial(document.querySelector(".dial-y") as HTMLDivElement, (v) => {
+  pointer.y = toCoord(v);
+  yOut.textContent = String(Math.round(pointer.y));
+  drawLine(pointer.x, pointer.y);
+  drawPointer();
+});
 
-  function dragStart(e: MouseEvent) {
-    if (!ctx) return;
+const canvasPointer = document.getElementById("canvasPointer") as HTMLCanvasElement;
+const pointerCtx = canvasPointer?.getContext("2d");
+const canvasPaint = document.getElementById("canvasPaint") as HTMLCanvasElement;
+const paintCtx = canvasPaint?.getContext("2d");
 
-    ctx.beginPath();
+function drawPointer() {
+  if (!pointerCtx) return;
 
-    isDrag = true;
-  }
+  pointerCtx.clearRect(0, 0, canvasPointer.width, canvasPointer.height);
 
-  function dragEnd(e: MouseEvent) {
-    if (!ctx) return;
-    isDrag = false;
-    lastPosition.x = 0;
-    lastPosition.y = 0;
-  }
+  pointerCtx.beginPath();
+  pointerCtx.arc(pointer.x, pointer.y, 6, 0, Math.PI * 2);
+  pointerCtx.fillStyle = "red";
+  pointerCtx.fill();
+}
 
-  function initEventHandler() {
-    const clearButton = document.getElementById("clear") as HTMLButtonElement;
-    clearButton.addEventListener("click", clear);
+let isPainting = false;
 
-    canvas.addEventListener("mousedown", dragStart);
-    canvas.addEventListener("mouseup", dragEnd);
-    canvas.addEventListener("mouseleave", dragEnd);
-    canvas.addEventListener("mousemove", (e) => {
-      draw(e.layerX, e.layerY);
-    });
-  }
+let lastPointer: Pointer | null = null;
 
-  initEventHandler();
+function drawLine(x: number, y: number) {
+  if (!isPainting) return;
+  if (!paintCtx) return;
+
+  const from = lastPointer ?? { x, y };
+
+  paintCtx.beginPath();
+  paintCtx.lineCap = "round";
+  paintCtx.lineJoin = "round";
+  paintCtx.lineWidth = 5;
+  paintCtx.strokeStyle = "black";
+  paintCtx.moveTo(from.x, from.y);
+  paintCtx.lineTo(x, y);
+  paintCtx.stroke();
+
+  lastPointer = { x, y };
+}
+
+window.addEventListener("load", () => drawPointer());
+
+document.getElementById("painting")?.addEventListener("change", (e) => {
+  const target = e.target as HTMLInputElement;
+  isPainting = target.checked;
+  lastPointer = null;
+});
+
+document.getElementById("clear")?.addEventListener("click", () => {
+  paintCtx?.clearRect(0, 0, canvasPaint.width, canvasPaint.height);
 });

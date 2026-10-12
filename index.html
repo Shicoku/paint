@@ -7,7 +7,10 @@
     <link rel="stylesheet" href="styles/main.css" />
   </head>
   <body>
-    <canvas id="canvas" width="400" height="400" style="border: 1px solid #000"></canvas>
+    <div class="canvas">
+      <canvas id="canvasPaint" width="400" height="400"></canvas>
+      <canvas id="canvasPointer" width="400" height="400" style="border: 1px solid #000"></canvas>
+    </div>
     <button id="clear">Clear</button>
 
     <div class="dial-wrap">
@@ -15,7 +18,8 @@
       <div><button type="button" class="dial dial-y"></button></div>
     </div>
     <p><span id="x-out">0</span>, <span id="y-out">0</span></p>
+    <div><input type="checkbox" name="painting" id="painting" /></div>
     <script src="./src/index.ts"></script>
-    <script src="./src/util/dial.ts"></script>
+    <!-- <script src="./src/util/dial.ts"></script> -->
   </body>
 </html>

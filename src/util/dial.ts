@@ -1,4 +1,4 @@
-function createDial(dial: HTMLDivElement, onChange?: (val: number) => void) {
+export function createDial(dial: HTMLDivElement, onChange?: (val: number) => void) {
   let isDialing = false;
   let lastRadian = 0;
   let val = 0;
@@ -40,13 +40,3 @@ function createDial(dial: HTMLDivElement, onChange?: (val: number) => void) {
     getVal: () => val,
   };
 }
-
-const xOut = document.querySelector("#x-out") as HTMLSpanElement;
-const dialX = createDial(document.querySelector(".dial-x") as HTMLDivElement, (v) => {
-  xOut.textContent = String(Math.round(v));
-});
-
-const yOut = document.querySelector("#y-out") as HTMLSpanElement;
-const dialY = createDial(document.querySelector(".dial-y") as HTMLDivElement, (v) => {
-  yOut.textContent = String(Math.round(v));
-});

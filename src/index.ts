@@ -8,6 +8,8 @@ const scale = canvas_size / 360;
 
 const pointer: Pointer = { x: center, y: center };
 
+let pointerSize = 6;
+
 function clamp(n: number): number {
   return Math.min(canvas_size, Math.max(0, n));
 }
@@ -21,7 +23,7 @@ const dialX = createDial(document.querySelector(".dial-x") as HTMLDivElement, (v
   pointer.x = toCoord(v);
   xOut.textContent = String(Math.round(pointer.x));
   drawLine(pointer.x, pointer.y);
-  drawPointer();
+  drawPointer(pointerSize);
 });
 
 const yOut = document.querySelector("#y-out") as HTMLSpanElement;
@@ -29,7 +31,7 @@ const dialY = createDial(document.querySelector(".dial-y") as HTMLDivElement, (v
   pointer.y = toCoord(v);
   yOut.textContent = String(Math.round(pointer.y));
   drawLine(pointer.x, pointer.y);
-  drawPointer();
+  drawPointer(pointerSize);
 });
 
 const canvasPointer = document.getElementById("canvasPointer") as HTMLCanvasElement;
@@ -37,13 +39,13 @@ const pointerCtx = canvasPointer?.getContext("2d");
 const canvasPaint = document.getElementById("canvasPaint") as HTMLCanvasElement;
 const paintCtx = canvasPaint?.getContext("2d");
 
-function drawPointer() {
+function drawPointer(size: number) {
   if (!pointerCtx) return;
 
   pointerCtx.clearRect(0, 0, canvasPointer.width, canvasPointer.height);
 
   pointerCtx.beginPath();
-  pointerCtx.arc(pointer.x, pointer.y, 6, 0, Math.PI * 2);
+  pointerCtx.arc(pointer.x, pointer.y, size, 0, Math.PI * 2);
   pointerCtx.lineWidth = 2;
   pointerCtx.strokeStyle = "black";
   pointerCtx.stroke();
@@ -62,7 +64,7 @@ function drawLine(x: number, y: number) {
   paintCtx.beginPath();
   paintCtx.lineCap = "round";
   paintCtx.lineJoin = "round";
-  paintCtx.lineWidth = 5;
+  paintCtx.lineWidth = pointerSize;
   paintCtx.strokeStyle = "black";
   paintCtx.moveTo(from.x, from.y);
   paintCtx.lineTo(x, y);
@@ -71,7 +73,7 @@ function drawLine(x: number, y: number) {
   lastPointer = { x, y };
 }
 
-window.addEventListener("load", () => drawPointer());
+window.addEventListener("load", () => drawPointer(pointerSize));
 
 document.getElementById("painting")?.addEventListener("change", (e) => {
   const target = e.target as HTMLInputElement;
@@ -81,4 +83,12 @@ document.getElementById("painting")?.addEventListener("change", (e) => {
 
 document.getElementById("clear")?.addEventListener("click", () => {
   paintCtx?.clearRect(0, 0, canvasPaint.width, canvasPaint.height);
+});
+
+document.getElementById("pointerSize")?.addEventListener("input", (e) => {
+  const target = e.target as HTMLInputElement;
+  pointerSize = Number(target.value);
+  drawPointer(pointerSize);
+  const sizeText = document.getElementById("sizeText") as HTMLLabelElement;
+  sizeText.textContent = target.value;
 });

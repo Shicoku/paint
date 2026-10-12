@@ -44,8 +44,9 @@ function drawPointer() {
 
   pointerCtx.beginPath();
   pointerCtx.arc(pointer.x, pointer.y, 6, 0, Math.PI * 2);
-  pointerCtx.fillStyle = "red";
-  pointerCtx.fill();
+  pointerCtx.lineWidth = 2;
+  pointerCtx.strokeStyle = "black";
+  pointerCtx.stroke();
 }
 
 let isPainting = false;

@@ -100,8 +100,16 @@ document.getElementById("pointerSize")?.addEventListener("input", (e) => {
 });
 
 document.getElementById("dl")?.addEventListener("click", () => {
+  let result = prompt("画像を保存します。\nファイル名を入力してください。\n空白の場合は YYYY-MM-DD_HH-MM で保存されます。");
+  if (result == null) return;
+
   const link = document.createElement("a");
   link.href = canvasPaint.toDataURL("image/png");
-  link.download = "image.png";
+  link.download = result.trim() ? result.trim() : makeFileName();
   link.click();
 });
+
+function makeFileName(): string {
+  const date = new Date();
+  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}_${date.getHours()}-${date.getMinutes()}`;
+}

@@ -20,11 +20,13 @@
     <p><span id="x-out">0</span>, <span id="y-out">0</span></p>
     <div><input type="checkbox" name="painting" id="painting" /></div>
     <div>
-      <input type="range" id="pointerSize" name="voolume" min="1" max="100" value="6" />
+      <input type="range" id="pointerSize" name="size" min="1" max="100" value="6" />
       <label for="size" id="sizeText">6</label>
+    </div>
+    <div>
+      <input type="color" name="colorPalette" id="colorPalette" value="#000000" />
     </div>
     <div><button id="dl">画像を保存</button></div>
     <script src="./src/index.ts"></script>
-    <!-- <script src="./src/util/dial.ts"></script> -->
   </body>
 </html>

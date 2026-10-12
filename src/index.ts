@@ -9,6 +9,7 @@ const scale = canvas_size / 360;
 const pointer: Pointer = { x: center, y: center };
 
 let pointerSize = 6;
+let color = "#000";
 
 function clamp(n: number): number {
   return Math.min(canvas_size, Math.max(0, n));
@@ -47,7 +48,7 @@ function drawPointer(size: number) {
   pointerCtx.beginPath();
   pointerCtx.arc(pointer.x, pointer.y, size, 0, Math.PI * 2);
   pointerCtx.lineWidth = 2;
-  pointerCtx.strokeStyle = "black";
+  pointerCtx.strokeStyle = color;
   pointerCtx.stroke();
 }
 
@@ -65,7 +66,7 @@ function drawLine(x: number, y: number) {
   paintCtx.lineCap = "round";
   paintCtx.lineJoin = "round";
   paintCtx.lineWidth = pointerSize;
-  paintCtx.strokeStyle = "black";
+  paintCtx.strokeStyle = color;
   paintCtx.moveTo(from.x, from.y);
   paintCtx.lineTo(x, y);
   paintCtx.stroke();
@@ -88,7 +89,9 @@ document.getElementById("painting")?.addEventListener("change", (e) => {
 });
 
 document.getElementById("clear")?.addEventListener("click", () => {
-  paintCtx?.clearRect(0, 0, canvasPaint.width, canvasPaint.height);
+  if (!paintCtx) return;
+  paintCtx.fillStyle = "#fff";
+  paintCtx.fillRect(0, 0, canvasPaint.width, canvasPaint.height);
 });
 
 document.getElementById("pointerSize")?.addEventListener("input", (e) => {
@@ -113,3 +116,9 @@ function makeFileName(): string {
   const date = new Date();
   return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}_${date.getHours()}-${date.getMinutes()}`;
 }
+
+document.getElementById("colorPalette")?.addEventListener("input", (event) => {
+  const target = event.target as HTMLInputElement;
+  color = target.value;
+  drawPointer(pointerSize);
+});

@@ -1,0 +1,8 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "framework": null,
+  "installCommand": "bun install",
+  "buildCommand": "bun run build",
+  "outputDirectory": "dist"
+}

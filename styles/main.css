@@ -15,7 +15,7 @@ body {
 .top {
   position: relative;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   gap: 10px;
 }
@@ -64,6 +64,27 @@ body {
   gap: 60px;
   justify-content: space-between;
 }
+
+.settings {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 0;
+}
+
+.painting-control,
+.size-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.size-control input[type="range"] {
+  width: min(120px, 32vw);
+}
+
 .dial {
   position: relative;
   border: 10px solid #939292;
@@ -81,10 +102,20 @@ body {
   padding: 0;
 }
 
+input[type="checkbox"] {
+  -ms-transform: scale(1.5, 1.5);
+  -webkit-transform: scale(1.5, 1.5);
+  transform: scale(1.5, 1.5);
+}
+
 @media (max-width: 600px) {
   .top {
     gap: 6px;
-    width: 100%;
+    width: auto;
+  }
+
+  .canvas {
+    width: min(800px, calc(100vw - 180px));
   }
 
   .btn-wrap {
@@ -102,6 +133,10 @@ body {
   .dial {
     width: min(100px, 24vw);
     height: min(100px, 24vw);
+  }
+
+  .size-control input[type="range"] {
+    width: min(80px, 22vw);
   }
 }
 .dial::before {

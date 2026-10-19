@@ -20,6 +20,19 @@
         <canvas id="canvasPaint" width="800" height="400"></canvas>
         <canvas id="canvasPointer" width="800" height="400" style="border: 1px solid #000"></canvas>
       </div>
+
+      <div>
+        <div class="settings">
+          <label class="painting-control" for="painting">
+            <input type="checkbox" name="painting" id="painting" />
+            書く
+          </label>
+          <div class="size-control">
+            <input type="range" id="pointerSize" name="size" min="1" max="100" value="6" />
+            <label for="pointerSize" id="sizeText">6</label>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="down">
@@ -29,12 +42,6 @@
       </div>
 
       <p><span id="x-out"></span>, <span id="y-out"></span></p>
-    </div>
-
-    <div><input type="checkbox" name="painting" id="painting" /></div>
-    <div>
-      <input type="range" id="pointerSize" name="size" min="1" max="100" value="6" />
-      <label for="size" id="sizeText">6</label>
     </div>
 
     <script src="./src/index.ts"></script>

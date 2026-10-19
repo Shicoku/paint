@@ -2,34 +2,43 @@ import { createDial } from "./util/dial";
 
 type Pointer = { x: number; y: number };
 
-const canvas_size = 400;
-const center = canvas_size / 2;
-const scale = canvas_size / 360;
+const canvasWidth = 800;
+const canvasHeight = 400;
+const centerX = canvasWidth / 2;
+const centerY = canvasHeight / 2;
+const scale = 400 / 360;
 
-const pointer: Pointer = { x: center, y: center };
+const pointer: Pointer = { x: centerX, y: centerY };
 
 let pointerSize = 6;
 let color = "#000";
 
-function clamp(n: number): number {
-  return Math.min(canvas_size, Math.max(0, n));
+function clamp(n: number, max: number): number {
+  return Math.min(max, Math.max(0, n));
 }
 
-function toCoord(angle: number): number {
-  return clamp(center + angle * scale);
+function toCoordX(angle: number): number {
+  return clamp(centerX + angle * scale, canvasWidth);
+}
+
+function toCoordY(angle: number): number {
+  return clamp(centerY + angle * scale, canvasHeight);
 }
 
 const xOut = document.querySelector("#x-out") as HTMLSpanElement;
+xOut.textContent = String(Math.round(pointer.x));
 const dialX = createDial(document.querySelector(".dial-x") as HTMLDivElement, (v) => {
-  pointer.x = toCoord(v);
+  pointer.x = toCoordX(v);
   xOut.textContent = String(Math.round(pointer.x));
   drawLine(pointer.x, pointer.y);
   drawPointer(pointerSize);
 });
 
 const yOut = document.querySelector("#y-out") as HTMLSpanElement;
+yOut.textContent = String(Math.round(pointer.y));
+
 const dialY = createDial(document.querySelector(".dial-y") as HTMLDivElement, (v) => {
-  pointer.y = toCoord(v);
+  pointer.y = toCoordY(v);
   yOut.textContent = String(Math.round(pointer.y));
   drawLine(pointer.x, pointer.y);
   drawPointer(pointerSize);

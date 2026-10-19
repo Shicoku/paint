@@ -1,16 +1,16 @@
 export function createDial(dial: HTMLDivElement, onChange?: (val: number) => void) {
-  let isDialing = false;
+	let activePointerId: number | null = null;
   let lastRadian = 0;
   let val = 0;
 
-  let getRadian = function (e: MouseEvent) {
+	let getRadian = function (e: PointerEvent) {
     let bounds = dial.parentElement!.getBoundingClientRect();
     let x = bounds.left + dial.offsetWidth / 2;
     let y = bounds.top + dial.offsetHeight / 2;
     return Math.atan2(e.clientY - y, e.clientX - x);
   };
 
-  let updataDraw = function (e: MouseEvent) {
+	let updataDraw = function (e: PointerEvent) {
     let radian = getRadian(e);
     let delta = (radian - lastRadian) * (180 / Math.PI);
     if (delta > 180) delta -= 360;
@@ -22,19 +22,25 @@ export function createDial(dial: HTMLDivElement, onChange?: (val: number) => voi
     onChange?.(val);
   };
 
-  dial.addEventListener("mousedown", function (e) {
-    isDialing = true;
+	dial.addEventListener("pointerdown", function (e) {
+		if (activePointerId !== null) return;
+		e.preventDefault();
+		activePointerId = e.pointerId;
     lastRadian = getRadian(e);
+		dial.setPointerCapture(e.pointerId);
   });
 
-  window.addEventListener("mousemove", function (e) {
-    if (!isDialing) return;
+	dial.addEventListener("pointermove", function (e) {
+		if (e.pointerId !== activePointerId) return;
     updataDraw(e);
   });
 
-  window.addEventListener("mouseup", function (e) {
-    isDialing = false;
-  });
+	const stopDialing = (e: PointerEvent) => {
+		if (e.pointerId === activePointerId) activePointerId = null;
+	};
+	dial.addEventListener("pointerup", stopDialing);
+	dial.addEventListener("pointercancel", stopDialing);
+	dial.addEventListener("lostpointercapture", stopDialing);
 
   return {
     getVal: () => val,

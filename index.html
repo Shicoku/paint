@@ -7,26 +7,36 @@
     <link rel="stylesheet" href="./styles/main.css" />
   </head>
   <body>
-    <div class="canvas">
-      <canvas id="canvasPaint" width="400" height="400"></canvas>
-      <canvas id="canvasPointer" width="400" height="400" style="border: 1px solid #000"></canvas>
-    </div>
-    <button id="clear">Clear</button>
+    <div class="top">
+      <div class="btn-wrap">
+        <button id="dl"><img src="./img/dl.svg" alt="dl" width="30px" height="30px" /></button>
+        <button id="clear"><img src="./img/tr.svg" alt="tr" width="30px" height="30px" /></button>
+        <div>
+          <input class="color" type="color" name="colorPalette" id="colorPalette" value="#000000" />
+        </div>
+      </div>
 
-    <div class="dial-wrap">
-      <div><button type="button" class="dial dial-x"></button></div>
-      <div><button type="button" class="dial dial-y"></button></div>
+      <div class="canvas">
+        <canvas id="canvasPaint" width="800" height="400"></canvas>
+        <canvas id="canvasPointer" width="800" height="400" style="border: 1px solid #000"></canvas>
+      </div>
     </div>
-    <p><span id="x-out">0</span>, <span id="y-out">0</span></p>
+
+    <div class="down">
+      <div class="dial-wrap">
+        <div><button type="button" class="dial dial-x"></button></div>
+        <div><button type="button" class="dial dial-y"></button></div>
+      </div>
+
+      <p><span id="x-out"></span>, <span id="y-out"></span></p>
+    </div>
+
     <div><input type="checkbox" name="painting" id="painting" /></div>
     <div>
       <input type="range" id="pointerSize" name="size" min="1" max="100" value="6" />
       <label for="size" id="sizeText">6</label>
     </div>
-    <div>
-      <input type="color" name="colorPalette" id="colorPalette" value="#000000" />
-    </div>
-    <div><button id="dl">画像を保存</button></div>
+
     <script src="./src/index.ts"></script>
   </body>
 </html>

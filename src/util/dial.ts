@@ -1,8 +1,12 @@
 export function createDial(dial: HTMLDivElement, onChange?: (val: number) => void) {
+  // 同時に別のタッチを受けても、このダイヤルを操作中の入力だけを追跡する
   let activePointerId: number | null = null;
+
+  // 前回の指の角度と、ダイヤルの累積角度
   let lastRadian = 0;
   let val = 0;
 
+  // ダイヤル中心から入力位置までの角度を求める
   let getRadian = function (e: PointerEvent) {
     let bounds = dial.parentElement!.getBoundingClientRect();
     let x = bounds.left + dial.offsetWidth / 2;
@@ -13,9 +17,12 @@ export function createDial(dial: HTMLDivElement, onChange?: (val: number) => voi
   let updataDraw = function (e: PointerEvent) {
     let radian = getRadian(e);
     let delta = (radian - lastRadian) * (180 / Math.PI);
+
+    // 角度が境界をまたいだとき、逆回転したように見える差分を補正する
     if (delta > 180) delta -= 360;
     else if (delta < -180) delta += 360;
 
+    // 上限・下限を越えて回した分を蓄積せず、端から戻るとすぐ反応させる
     val = Math.min(360, Math.max(-360, val + delta));
     lastRadian = radian;
     dial.style.transform = `rotate(${val}deg)`;
@@ -42,6 +49,7 @@ export function createDial(dial: HTMLDivElement, onChange?: (val: number) => voi
   dial.addEventListener("pointercancel", stopDialing);
   dial.addEventListener("lostpointercapture", stopDialing);
 
+  // 現在のダイヤル角度を呼び出し元から参照できるようにする
   return {
     getVal: () => val,
   };

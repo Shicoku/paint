@@ -2,6 +2,7 @@ import { createDial } from "./util/dial";
 
 type Pointer = { x: number; y: number };
 
+// キャンバスの大きさと、ダイヤルの角度を座標に変換するための設定
 const canvasWidth = 800;
 const canvasHeight = 400;
 const centerX = canvasWidth / 2;
@@ -10,9 +11,11 @@ const scale = 400 / 360;
 
 const pointer: Pointer = { x: centerX, y: centerY };
 
+// 描画に使う現在のサイズと色
 let pointerSize = 6;
 let color = "#000";
 
+// 座標がキャンバスの範囲をはみ出さないようにする
 function clamp(n: number, max: number): number {
   return Math.min(max, Math.max(0, n));
 }
@@ -25,8 +28,10 @@ function toCoordY(angle: number): number {
   return clamp(centerY + angle * scale, canvasHeight);
 }
 
+// X・Yそれぞれのダイヤル操作を座標に反映する
 const xOut = document.querySelector("#x-out") as HTMLSpanElement;
 xOut.textContent = String(Math.round(pointer.x));
+
 const dialX = createDial(document.querySelector(".dial-x") as HTMLDivElement, (v) => {
   pointer.x = toCoordX(v);
   xOut.textContent = String(Math.round(pointer.x));
@@ -49,6 +54,7 @@ const pointerCtx = canvasPointer?.getContext("2d");
 const canvasPaint = document.getElementById("canvasPaint") as HTMLCanvasElement;
 const paintCtx = canvasPaint?.getContext("2d");
 
+// 描画位置を示す円を、透明なキャンバスに描き直す
 function drawPointer(size: number) {
   if (!pointerCtx) return;
 
@@ -63,8 +69,10 @@ function drawPointer(size: number) {
 
 let isPainting = false;
 
+// 線をつなぐため、直前に描いた位置を記録しておく
 let lastPointer: Pointer | null = null;
 
+// 描画モードが有効なとき、前回の位置から現在位置まで線を引く
 function drawLine(x: number, y: number) {
   if (!isPainting) return;
   if (!paintCtx) return;
@@ -91,6 +99,7 @@ window.addEventListener("load", () => {
   drawPointer(pointerSize);
 });
 
+// 描画モードの切り替え時は、次の線が前の位置につながらないようにする
 document.getElementById("painting")?.addEventListener("change", (e) => {
   const target = e.target as HTMLInputElement;
   isPainting = target.checked;
@@ -103,6 +112,7 @@ document.getElementById("clear")?.addEventListener("click", () => {
   paintCtx.fillRect(0, 0, canvasPaint.width, canvasPaint.height);
 });
 
+// スライダーの値を筆の太さに反映し、表示中の数値も更新する
 document.getElementById("pointerSize")?.addEventListener("input", (e) => {
   const target = e.target as HTMLInputElement;
   pointerSize = Number(target.value);
@@ -121,11 +131,13 @@ document.getElementById("dl")?.addEventListener("click", () => {
   link.click();
 });
 
+// ファイル名が入力されなかった場合に使う日時形式の名前
 function makeFileName(): string {
   const date = new Date();
   return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}_${date.getHours()}-${date.getMinutes()}`;
 }
 
+// 色の変更を筆と位置マーカーに反映する
 document.getElementById("colorPalette")?.addEventListener("input", (event) => {
   const target = event.target as HTMLInputElement;
   color = target.value;

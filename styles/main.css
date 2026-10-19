@@ -1,3 +1,7 @@
+html {
+  user-select: none;
+}
+
 .top {
   position: relative;
   display: flex;

@@ -32,12 +32,20 @@
 
 .down {
   margin-top: 30px;
-  margin-left: 50px;
+  margin-left: 300px;
+}
+.down p {
+  margin-left: 80px;
+  font-size: 1.3rem;
+  border: 2px solid #000;
+  border-radius: 0.627px;
+  padding: 10px;
+  width: fit-content;
 }
 
 .dial-wrap {
   display: flex;
-  gap: 30px;
+  gap: 60px;
 }
 .dial {
   position: relative;
